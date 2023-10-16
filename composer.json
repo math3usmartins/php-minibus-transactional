@@ -1,0 +1,28 @@
+{
+    "license": "MIT",
+    "type": "library",
+    "name": "math3usmartins/php-minibus-transactional",
+    "description": "A package to make your minibus compatible with transactional outbox pattern",
+    "autoload": {
+        "psr-4": {
+            "MiniBus\\Transactional\\": "src",
+            "MiniBus\\Transactional\\Test\\": "test"
+        },
+        "exclude-from-classmap": [
+            "/test/"
+        ]
+    },
+    "require": {
+        "php": "^5.6",
+        "ext-json": "*",
+        "ext-pdo": "*",
+        "math3usmartins/php-minibus-transport": "^1.0",
+        "doctrine/dbal": "^2.5"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^5.7",
+        "phpunit/php-code-coverage": "^4.0",
+        "friendsofphp/php-cs-fixer": "^2.19",
+        "phpmetrics/phpmetrics": "^2.8"
+    }
+}

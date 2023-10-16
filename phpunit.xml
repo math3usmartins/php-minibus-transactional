@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
+         verbose="true"
+         failOnRisky="true"
+         failOnWarning="true"
+         forceCoversAnnotation="true"
+         checkForUnintentionallyCoveredCode="true"
+         beStrictAboutCoversAnnotation="false"
+         bootstrap="vendor/autoload.php"
+         beStrictAboutTestsThatDoNotTestAnything="true">
+
+    <filter>
+        <whitelist processUncoveredFilesFromWhitelist="true"
+                   addUncoveredFilesFromWhitelist="true">
+            <directory suffix=".php">./src</directory>
+        </whitelist>
+    </filter>
+
+    <logging>
+        <log type="coverage-html" target=".coverage" />
+        <log type="coverage-text" target="php://stdout" showUncoveredFiles="true" />
+    </logging>
+
+    <testsuites>
+        <testsuite name="minibus">
+            <directory>./test</directory>
+        </testsuite>
+    </testsuites>
+</phpunit>

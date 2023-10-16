@@ -1,0 +1,80 @@
+name: test
+
+on:
+  push:
+    branches:
+      - main
+  pull_request: ~
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: math3usmartins/php-minibus-trx-builder:latest
+      env:
+        DEBIAN_FRONTEND: noninteractive
+    steps:
+      - name: checkout
+        uses: actions/checkout@v3
+      - name: install composer packages
+        run: |
+          composer install \
+            --dev \
+            --optimize-autoloader \
+            --no-interaction
+      - name: create app artifact
+        run: tar -vcf app.tar --exclude .git ./
+      - uses: actions/upload-artifact@master
+        with:
+          name: app
+          path: ./app.tar
+
+  code-style:
+    needs: [build]
+    runs-on: ubuntu-latest
+    container:
+      image: math3usmartins/php-minibus-trx-builder:latest
+      env:
+        DEBIAN_FRONTEND: noninteractive
+    steps:
+      - uses: actions/download-artifact@master
+        with:
+          name: app
+          path: ./
+      - name: extract app files
+        run: tar -xf ./app.tar
+      - name: check code style
+        run: vendor/bin/php-cs-fixer fix -vvv
+
+  unit-tests:
+    needs: [build]
+    runs-on: ubuntu-latest
+    container:
+      image: math3usmartins/php-minibus-trx-builder:latest
+      env:
+        DEBIAN_FRONTEND: noninteractive
+        DB_TABLE: trx_msg_outbox
+        DB_USER: root
+        DB_PWD: minibus
+        DB_NAME: minibus
+        DB_HOST: database
+        DB_PORT: 3306
+    services:
+      database:
+        ports:
+          - 3306
+        image: mysql:5.7
+        env:
+          MYSQL_ROOT_PASSWORD: minibus
+          MYSQL_DATABASE: minibus
+    steps:
+      - uses: actions/download-artifact@master
+        with:
+          name: app
+          path: ./
+      - name: extract app files
+        run: tar -xf ./app.tar
+      - name: wait for database
+        run: TIMEOUT=60 .github/wait-for-db.php
+      - name: run unit tests
+        run: vendor/bin/phpunit

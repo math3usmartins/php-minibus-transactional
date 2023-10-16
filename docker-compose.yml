@@ -1,0 +1,30 @@
+version: "2.2"
+
+services:
+  php:
+    build:
+      dockerfile: Dockerfile
+      args:
+        WWW_DATA_UID: 1000
+        WWW_DATA_GID: 1000
+    working_dir: /var/www/app
+    user: www-data
+    command: "php"
+    environment:
+      COMPOSER_HOME: "/var/www/.composer"
+      DB_TABLE: trx_msg_outbox
+      DB_USER: root
+      DB_PWD: minibus
+      DB_NAME: minibus
+      DB_HOST: database
+      DB_PORT: 3306
+    volumes:
+      - ./:/var/www/app
+      - .docker/composer:/var/www/.composer
+
+  database:
+    image: mysql:5.7-debian
+    ports: []
+    environment:
+      MYSQL_ROOT_PASSWORD: minibus
+      MYSQL_DATABASE: minibus

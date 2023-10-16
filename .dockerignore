@@ -1,0 +1,5 @@
+.docker/composer
+.github
+.coverage
+docker-compose.override.yml
+docker-compose.yml
